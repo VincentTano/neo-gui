@@ -102,6 +102,8 @@ namespace Neo.UI
             textBox4.Text = contract.Author;
             textBox5.Text = string.Join(", ", contract.Code.ParameterList);
             button2.Enabled = parameters.Length > 0;
+            MainForm parent = (MainForm)this.Owner;
+            parent.scListAdd("Deployed ScriptHash", contract.Name, script_hash.ToString(), true);
             UpdateScript();
         }
 
@@ -149,7 +151,7 @@ namespace Neo.UI
             //////////STRICTLY FOR TESTING PURPOSES ONLY////////////////
             ////////////////////////////////////////////////////////////
             testTx = tx;
-            testTx.Gas = Fixed8.One;
+            testTx.Gas = Fixed8.Satoshi;
             testTx = GetTransaction();
             SignatureContext context;
             try
@@ -175,14 +177,14 @@ namespace Neo.UI
             if (engine.Execute())
             {
                 tx.Gas = engine.GasConsumed - Fixed8.FromDecimal(10);
-                if (tx.Gas < Fixed8.One) tx.Gas = Fixed8.One;
+                if (tx.Gas < Fixed8.Satoshi) tx.Gas = Fixed8.Satoshi;
                 tx.Gas = tx.Gas.Ceiling();
                 label7.Text = tx.Gas + " gas";
                 button3.Enabled = true;
                 if (engine.EvaluationStack.Peek().ToString()!="Neo.VM.Types.InteropInterface")
-                    {
-                        MessageBox.Show("Return: " + engine.EvaluationStack.Peek().GetByteArray().ToHexString());
-                    }
+                {
+                    MessageBox.Show("Return: " + engine.EvaluationStack.Peek().GetByteArray().ToHexString() + "\n" + System.Text.Encoding.UTF8.GetString(engine.EvaluationStack.Peek().GetByteArray()));
+                }
             }
             else
             {

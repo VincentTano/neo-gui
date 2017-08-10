@@ -183,7 +183,6 @@ namespace Neo.UI
                 foreach (TransactionInfo info in transactions)
                 {
                     string txid = info.Transaction.Hash.ToString();
-                    File.AppendAllText(@"C:\Users\vtano\Documents\txid.txt", "\n\n" + txid + "\n");
                     if (listView3.Items.ContainsKey(txid))
                     {
                         listView3.Items[txid].Tag = info;
